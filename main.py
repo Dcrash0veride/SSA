@@ -51,11 +51,12 @@ def parse_executable(file):
       loose_list.append(v[j])
     section_dict[k] = loose_list
   colorize.pretty_print_results(['Name', 'SECTION_FIELD_VALUES'], section_dict)
-  # Time to deal with directories
-  base = int(opt_ressy['BaseOfCode'], 16)
-  dir_addr = int(opt_ressy['ImportDirectoryAddress'], 16)
-  dir_size = int(opt_ressy['ImportDirectorySize'], 16)
-  imp_ressy = results.import_directory_results(file_to_open, opt_ressy['BaseOfCode'], opt_ressy['ImportDirectoryAddress'], opt_ressy['ImportDirectorySize'])
+  directory_info = results.export_directory_address_vars(section_dict, opt_ressy['ImportDirectoryAddress'])
+  # Time to deal with directories Having issue with parsing directories. Offset should be 1400 I think
+  raw_offset = int(directory_info[0], 16)
+  dir_addr = int(directory_info[1], 16)
+  virt_addr = int(directory_info[2], 16)
+  imp_ressy = results.import_directory_results(file_to_open, raw_offset, dir_addr, virt_addr, opt_ressy['ImportDirectorySize'])
   for k,v in imp_ressy.items():
     print(colorize.terminal_colorize() + "{}\033[0m".format(k, end=" "))
     print(colorize.terminal_colorize() + "{}\033[0m".format(v, end='\n'))

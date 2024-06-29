@@ -2,14 +2,16 @@
 
 class Directory():
 
-    def __init__(self, user_file, base, vaddr):
+    def __init__(self, user_file, base, directory_address, vaddr):
         self.user_file = user_file
         self.base = base
+        self.directory_address = directory_address
         self.virtual_address = vaddr
 
 
     def calculate_address(self):
-        return int(self.virtual_address, 16) - int(self.base, 16)
+        addr = int(self.base) + int(self.directory_address) - int(self.virtual_address)
+        return addr
 
     def correct_endianness(self,first_thunk):
         if type(first_thunk) == str:
@@ -28,7 +30,7 @@ class Directory():
             contents = f.read()
             offset = self.calculate_address()
             start = int(offset)
-            stop = int(offset) + int(size)
+            stop = int(offset) + int(size, 16)
             chunk_size = int('14', 16)
             marker = 0
             directory_information = contents[offset:stop]
@@ -67,31 +69,81 @@ class Directory():
                 marker += chunk_size
             return method_list
 
+    # This method returns a dictionary of DLL imports, and the thunks associated with the dll
     def parse_imports(self, import_directories):
         results = {}
-        for entry in range(len(import_directories)):
-            if import_directories[entry][0] != '00000000' and import_directories[entry + 1][0] != '00000000':
-                raw_name = import_directories[entry][3]
-                format_name = raw_name.lstrip('0')
-                true_name = self.resolve_name(format_name)
-                t_start = import_directories[entry][0]
-                t_end = import_directories[entry + 1][0]
-                method_return = self.import_methods(t_start, t_end)
-                results[true_name] = method_return
-            elif import_directories[entry][0] != '00000000' and import_directories[entry + 1][0] == '00000000':
-                final_countdown = ""
-                final_showdown = ""
-                for k,v in results.items():
-                    final_countdown = k
-                    final_showdown = v[0]
-                raw_name = import_directories[entry][3]
-                format_name = raw_name.lstrip('0')
-                true_name = self.resolve_name(format_name)
-                t_start = import_directories[entry][0]
-                t_end = final_showdown
-                method_return = self.import_methods(t_start, t_end)
-                results[true_name] = method_return
-        return results
+        dll_names = []
+        for entry in import_directories:
+            original_first_thunk = entry[0]
+            time_data_stamp = entry[1]
+            forwarder = entry[2]
+            name_rva = entry[3]
+            first_thunk = entry[4]
+            if name_rva != '00000000':
+                library_name_location = int(self.base) + int(name_rva, 16) - int(self.virtual_address)
+                first_thunk_address = int(self.base) + int(first_thunk, 16) - int(self.virtual_address)
+                top_tuple = (self.resolve_name(library_name_location), first_thunk_address)
+                # Creates a list of tuples contained the library_name and the first_thunk addy, run in reverse to occupy space betwizyt
+                dll_names.append(top_tuple)
+        for entry in dll_names:
+            with open(self.user_file, 'rb') as f:
+                method_thunks = []
+                contents = f.read()
+                thunk_start = entry[1]
+                chunk = 8
+                info = contents[thunk_start:thunk_start + chunk].hex()
+                while info.lstrip('0') != '':
+                    info = self.correct_endianness(info)
+                    method_thunks.append(info.lstrip('0'))
+                    thunk_start += chunk
+                    info = contents[thunk_start: thunk_start + chunk].hex()
+                results[entry[0]] = method_thunks
+        imports_dictionary = {}
+        for k,v in results.items():
+            imports_list = []
+            for _ in range(0, len(v)):
+                real_address = int(self.base) + int(v[_], 16) - int(self.virtual_address)
+                imports_list.append(self.resolve_method_name(real_address))
+            imports_dictionary[k] = imports_list
+        return imports_dictionary
+
+            
+        #return results
+    
+
+
+
+        #for _ in range(0, len(dll_names)):
+
+            
+
+
+
+
+
+#        for entry in range(len(import_directories)):
+#            if import_directories[entry][0] != '00000000' and import_directories[entry + 1][0] != '00000000':
+#                raw_name = import_directories[entry][3]
+#                format_name = raw_name.lstrip('0')
+#                true_name = self.resolve_name(format_name)
+#                t_start = import_directories[entry][0]
+#                t_end = import_directories[entry + 1][0]
+#                method_return = self.import_methods(t_start, t_end)
+#                results[true_name] = method_return
+#            elif import_directories[entry][0] != '00000000' and import_directories[entry + 1][0] == '00000000':
+#                final_countdown = ""
+#                final_showdown = ""
+#                for k,v in results.items():
+#                    final_countdown = k
+#                    final_showdown = v[0]
+#                raw_name = import_directories[entry][3]
+#                format_name = raw_name.lstrip('0')
+#                true_name = self.resolve_name(format_name)
+#                t_start = import_directories[entry][0]
+#                t_end = final_showdown
+#                method_return = self.import_methods(t_start, t_end)
+#                results[true_name] = method_return
+#        return results
 
 
     def resolve_name(self, name_location):
@@ -99,8 +151,8 @@ class Directory():
             contents = f.read()
             chunk_size = 8
             name = []
-            base = int(name_location, 16) - int('1000', 16)
-            name_chunk = contents[base:base + chunk_size].hex()
+            base = name_location
+            name_chunk = contents[name_location:name_location + chunk_size].hex()
             while '00' not in name_chunk:
                 chunk_size += 1
                 name_chunk = contents[base:base + chunk_size].hex()
@@ -111,12 +163,12 @@ class Directory():
     def resolve_method_name(self, name_location):
         with open(self.user_file, 'rb') as f:
             contents = f.read()
-            chunk_size = 8
+            chunk_size = 1
             name = []
-            base = int(name_location, 16) - int('1000', 16)
-            name_chunk = contents[base:base + chunk_size].hex()
+            base = int(name_location) + 2
+            name_chunk = contents[base:base + int(chunk_size)].hex()
             while '00' not in name_chunk:
                 chunk_size += 1
-                name_chunk = contents[base:base + chunk_size].hex()
-            name = name_chunk[4:-2]
+                name_chunk = contents[int(base):int(base) + int(chunk_size)].hex()
+            name = name_chunk
         return str(bytes.fromhex(name).decode('utf-8'))

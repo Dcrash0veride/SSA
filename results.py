@@ -53,14 +53,29 @@ def section_results(file_to_open, number_of_sections, start_address):
     section_dict[section_name] = section_info
   return section_dict
 
-def import_directory_results(file_to_open, baseOfCode, directory_address, directory_size):
-  import_directory = directory_class.Directory(file_to_open, baseOfCode, directory_address)
-  imports = import_directory.import_directory(file_to_open, int(directory_size, 16))
+def export_directory_address_vars(section_results, directory_address):
+        for k,v in section_results.items():
+            section_end_address = int(v[2], 16) + int(v[3], 16)
+            if int(directory_address, 16) > int(section_end_address):
+               pass
+            elif int(directory_address, 16) < int(section_end_address):
+                raw_offset = v[4]
+                virtual_addr = v[2]
+                information_tuple = (raw_offset, directory_address, virtual_addr)
+
+                return information_tuple
+        return "Bad Address"
+
+def import_directory_results(file_to_open, raw_offset, directory_address, virtual_address, directory_size):
+  import_directory = directory_class.Directory(file_to_open, raw_offset, directory_address, virtual_address)
+  imports = import_directory.import_directory(file_to_open, directory_size)
   decoded_imports = import_directory.parse_imports(imports)
   ressy_dict = {}
   for k,v in decoded_imports.items():
-    method_list = []
-    for j in range(len(v)):
-      method_list.append(import_directory.resolve_method_name(v[j]))
-    ressy_dict[k] = method_list
+     cleaned_list = []
+     for j in range(0, len(v)):
+        entry = v[j]
+        cleaned_list.append(entry[:-1])
+     ressy_dict[k] = cleaned_list
   return ressy_dict
+    

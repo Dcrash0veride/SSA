@@ -79,6 +79,9 @@ class Header():
             else:
                 print(k + " : " + str(v))
 
+    
+        
+
 class Rich_header(Header):
 
     def __init__(self,fields_dict, user_file):
