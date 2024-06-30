@@ -67,6 +67,7 @@ def export_directory_address_vars(section_results, directory_address):
         return "Bad Address"
 
 def import_directory_results(file_to_open, raw_offset, directory_address, virtual_address, directory_size):
+  print("HIT IMPORT DIRECTORY RESULTS")
   import_directory = directory_class.Directory(file_to_open, raw_offset, directory_address, virtual_address)
   imports = import_directory.import_directory(file_to_open, directory_size)
   decoded_imports = import_directory.parse_imports(imports)

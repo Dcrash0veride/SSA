@@ -56,6 +56,7 @@ def parse_executable(file):
   raw_offset = int(directory_info[0], 16)
   dir_addr = int(directory_info[1], 16)
   virt_addr = int(directory_info[2], 16)
+  print(raw_offset, dir_addr, virt_addr)
   imp_ressy = results.import_directory_results(file_to_open, raw_offset, dir_addr, virt_addr, opt_ressy['ImportDirectorySize'])
   for k,v in imp_ressy.items():
     print(colorize.terminal_colorize() + "{}\033[0m".format(k, end=" "))

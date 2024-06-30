@@ -3,6 +3,7 @@
 class Directory():
 
     def __init__(self, user_file, base, directory_address, vaddr):
+        print("DIRECTORY OBJECT CREATED")
         self.user_file = user_file
         self.base = base
         self.directory_address = directory_address
@@ -26,6 +27,7 @@ class Directory():
 
 
     def import_directory(self, user_file, size):
+        print("DIRECROTY IMPORT 1")
         with open(user_file, 'rb') as f:
             contents = f.read()
             offset = self.calculate_address()
@@ -34,6 +36,7 @@ class Directory():
             chunk_size = int('14', 16)
             marker = 0
             directory_information = contents[offset:stop]
+            print(directory_information)
             directory_information_list = []
             while marker < len(directory_information):
                 dir_info_chunk = directory_information[marker:marker + chunk_size]
@@ -73,6 +76,8 @@ class Directory():
     def parse_imports(self, import_directories):
         results = {}
         dll_names = []
+        print("PARSING IMPORTS")
+        print(import_directories)
         for entry in import_directories:
             original_first_thunk = entry[0]
             time_data_stamp = entry[1]
@@ -86,6 +91,8 @@ class Directory():
                 # Creates a list of tuples contained the library_name and the first_thunk addy, run in reverse to occupy space betwizyt
                 dll_names.append(top_tuple)
         for entry in dll_names:
+            print("DLL NAMES LOOP!")
+            print(entry)
             with open(self.user_file, 'rb') as f:
                 method_thunks = []
                 contents = f.read()
