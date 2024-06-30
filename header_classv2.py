@@ -31,7 +31,6 @@ class Header():
         self.file_to_open = file_to_open
         self.start_bytes = start_bytes
         self.end_bytes = end_bytes
-        print(self.file_to_open)
 
     def reverse_endianness(self, data):
         if type(data) == str:

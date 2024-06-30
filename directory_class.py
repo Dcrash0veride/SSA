@@ -163,6 +163,8 @@ class Directory():
     
     def resolve_method_name(self, name_location):
         with open(self.user_file, 'rb') as f:
+            print(name_location)
+            print(self.max_size)
             if int(name_location) > int(self.max_size):
                 return " BAD ADDRESS "
             contents = f.read()
