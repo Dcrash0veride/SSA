@@ -101,7 +101,7 @@ class Directory():
                     thunk_start += chunk
                     info = contents[thunk_start: thunk_start + chunk].hex()
                 results[entry[0]] = method_thunks
-            print("RESULTS" + results.items())
+            print("RESULTS", results.items())
         imports_dictionary = {}
         for k,v in results.items():
             imports_list = []
