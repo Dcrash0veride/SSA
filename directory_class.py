@@ -88,7 +88,6 @@ class Directory():
                 # Creates a list of tuples contained the library_name and the first_thunk addy, run in reverse to occupy space betwizyt
                 dll_names.append(top_tuple)
         for entry in dll_names:
-            print(entry)
             with open(self.user_file, 'rb') as f:
                 method_thunks = []
                 contents = f.read()
@@ -102,14 +101,16 @@ class Directory():
                     thunk_start += chunk
                     info = contents[thunk_start: thunk_start + chunk].hex()
                 results[entry[0]] = method_thunks
+            print("RESULTS" + results.items())
         imports_dictionary = {}
         for k,v in results.items():
             imports_list = []
             for _ in range(0, len(v)):
-                print(self.base)
-                print(self.virtual_address)
+                print("BASE: " + str(self.base))
+                print("VADDR: " + str(self.virtual_address))
+                print("I" + str(v[_]))
                 real_address = int(self.base) + int(v[_], 16) - int(self.virtual_address)
-                print(real_address)
+                print("RVA: " + str(real_address))
                 imports_list.append(self.resolve_method_name(real_address))
             imports_dictionary[k] = imports_list
         return imports_dictionary
