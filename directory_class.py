@@ -175,12 +175,14 @@ class Directory():
 
     
     def resolve_method_name(self, name_location):
+        print("Hello Welcome to Chili's")
         with open(self.user_file, 'rb') as f:
             contents = f.read()
             chunk_size = 1
             name = []
             base = int(name_location) + 2
             name_chunk = contents[base:base + int(chunk_size)].hex()
+            print(name_chunk)
             while '00' not in name_chunk:
                 chunk_size += 1
                 name_chunk = contents[int(base):int(base) + int(chunk_size)].hex()
