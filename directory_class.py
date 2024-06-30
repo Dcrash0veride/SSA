@@ -112,7 +112,11 @@ class Directory():
             print("IN RESULTS LOOP")
             imports_list = []
             for _ in range(0, len(v)):
+                print("IN IMPORTS LIST LOOP")
+                print("V is : " + str(v))
+                print(len(v))
                 real_address = int(self.base) + int(v[_], 16) - int(self.virtual_address)
+                print(real_address)
                 imports_list.append(self.resolve_method_name(real_address))
             imports_dictionary[k] = imports_list
         return imports_dictionary
