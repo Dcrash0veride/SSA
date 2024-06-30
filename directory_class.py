@@ -85,9 +85,12 @@ class Directory():
             first_thunk = entry[4]
             if name_rva != '00000000':
                 library_name_location = int(self.base) + int(name_rva, 16) - int(self.virtual_address)
+                print("LIB NAME" + str(library_name_location))
                 first_thunk_address = int(self.base) + int(first_thunk, 16) - int(self.virtual_address)
+                print("FIRT THINK:" + str(first_thunk_address))
                 top_tuple = (self.resolve_name(library_name_location), first_thunk_address)
                 # Creates a list of tuples contained the library_name and the first_thunk addy, run in reverse to occupy space betwizyt
+                print(top_tuple)
                 dll_names.append(top_tuple)
         for entry in dll_names:
             print(entry)
