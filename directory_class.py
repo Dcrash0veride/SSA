@@ -177,6 +177,8 @@ class Directory():
     def resolve_method_name(self, name_location):
         print("Hello Welcome to Chili's")
         with open(self.user_file, 'rb') as f:
+            if len(name_location) > 8:
+                pass
             contents = f.read()
             chunk_size = 1
             name = []
