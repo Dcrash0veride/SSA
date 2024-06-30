@@ -61,14 +61,25 @@ def export_directory_address_vars(section_results, directory_address):
             elif int(directory_address, 16) < int(section_end_address):
                 raw_offset = v[4]
                 virtual_addr = v[2]
-                information_tuple = (raw_offset, directory_address, virtual_addr)
+                max_size = int(v[3], 16) + int(v[4], 16) 
+                information_tuple = (raw_offset, directory_address, virtual_addr, max_size)
 
                 return information_tuple
         return "Bad Address"
 
-def import_directory_results(file_to_open, raw_offset, directory_address, virtual_address, directory_size):
-  print("HIT IMPORT DIRECTORY RESULTS")
-  import_directory = directory_class.Directory(file_to_open, raw_offset, directory_address, virtual_address)
+
+def get_end_address(sizeOfHeaders, section_results):
+   count = 0
+   for k,v in section_results.items():
+      values = section_results[k]
+      size = values[2]
+      count += int(size, 16)
+   count += int(sizeOfHeaders, 16)
+   return count
+
+
+def import_directory_results(file_to_open, raw_offset, directory_address, virtual_address, directory_size, max_size):
+  import_directory = directory_class.Directory(file_to_open, raw_offset, directory_address, virtual_address, max_size)
   imports = import_directory.import_directory(file_to_open, directory_size)
   decoded_imports = import_directory.parse_imports(imports)
   ressy_dict = {}

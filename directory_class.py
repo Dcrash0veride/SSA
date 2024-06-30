@@ -2,12 +2,12 @@
 
 class Directory():
 
-    def __init__(self, user_file, base, directory_address, vaddr):
-        print("DIRECTORY OBJECT CREATED")
+    def __init__(self, user_file, base, directory_address, vaddr, max_size):
         self.user_file = user_file
         self.base = base
         self.directory_address = directory_address
         self.virtual_address = vaddr
+        self.max_size = max_size
 
 
     def calculate_address(self):
@@ -27,7 +27,6 @@ class Directory():
 
 
     def import_directory(self, user_file, size):
-        print("DIRECROTY IMPORT 1")
         with open(user_file, 'rb') as f:
             contents = f.read()
             offset = self.calculate_address()
@@ -36,7 +35,6 @@ class Directory():
             chunk_size = int('14', 16)
             marker = 0
             directory_information = contents[offset:stop]
-            print(directory_information)
             directory_information_list = []
             while marker < len(directory_information):
                 dir_info_chunk = directory_information[marker:marker + chunk_size]
@@ -76,8 +74,6 @@ class Directory():
     def parse_imports(self, import_directories):
         results = {}
         dll_names = []
-        print("PARSING IMPORTS")
-        print(import_directories)
         for entry in import_directories:
             original_first_thunk = entry[0]
             time_data_stamp = entry[1]
@@ -91,8 +87,6 @@ class Directory():
                 # Creates a list of tuples contained the library_name and the first_thunk addy, run in reverse to occupy space betwizyt
                 dll_names.append(top_tuple)
         for entry in dll_names:
-            print("DLL NAMES LOOP!")
-            print(entry)
             with open(self.user_file, 'rb') as f:
                 method_thunks = []
                 contents = f.read()
@@ -106,17 +100,10 @@ class Directory():
                     info = contents[thunk_start: thunk_start + chunk].hex()
                 results[entry[0]] = method_thunks
         imports_dictionary = {}
-        print("OUT OF DLL NAMES LOOP")
-        print(imports_dictionary)
         for k,v in results.items():
-            print("IN RESULTS LOOP")
             imports_list = []
             for _ in range(0, len(v)):
-                print("IN IMPORTS LIST LOOP")
-                print("V is : " + str(v))
-                print(len(v))
                 real_address = int(self.base) + int(v[_], 16) - int(self.virtual_address)
-                print(real_address)
                 imports_list.append(self.resolve_method_name(real_address))
             imports_dictionary[k] = imports_list
         return imports_dictionary
@@ -175,18 +162,14 @@ class Directory():
 
     
     def resolve_method_name(self, name_location):
-        print("Hello Welcome to SECY COMPUTER TIMES")
         with open(self.user_file, 'rb') as f:
-            print(len(str(name_location)))
-            if len(str(name_location)) > 8:
-                return "BAD ADDRESS"
+            if int(name_location) > int(self.max_size):
+                return " BAD ADDRESS "
             contents = f.read()
             chunk_size = 1
             name = []
-            print(name_location)
             base = int(name_location) + 2
             name_chunk = contents[base:base + int(chunk_size)].hex()
-            print(name_chunk)
             while '00' not in name_chunk:
                 chunk_size += 1
                 name_chunk = contents[int(base):int(base) + int(chunk_size)].hex()
