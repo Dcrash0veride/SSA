@@ -89,6 +89,7 @@ class Directory():
                 # Creates a list of tuples contained the library_name and the first_thunk addy, run in reverse to occupy space betwizyt
                 dll_names.append(top_tuple)
         for entry in dll_names:
+            print(entry)
             with open(self.user_file, 'rb') as f:
                 method_thunks = []
                 contents = f.read()
