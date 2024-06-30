@@ -31,6 +31,7 @@ class Header():
         self.file_to_open = file_to_open
         self.start_bytes = start_bytes
         self.end_bytes = end_bytes
+        print(self.file_to_open)
 
     def reverse_endianness(self, data):
         if type(data) == str:
@@ -161,6 +162,7 @@ class Dos_stub(Header):
         self.user_file = file_to_open
         self.start_bytes = start_bytes
         self.end_bytes = end_bytes
+        
 
     def is_dos_modified(self):
         with open(self.user_file, 'rb') as f:
