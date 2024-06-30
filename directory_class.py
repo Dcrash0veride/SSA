@@ -180,6 +180,7 @@ class Directory():
             contents = f.read()
             chunk_size = 1
             name = []
+            print(name_location)
             base = int(name_location) + 2
             name_chunk = contents[base:base + int(chunk_size)].hex()
             print(name_chunk)
