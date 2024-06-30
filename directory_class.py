@@ -77,6 +77,7 @@ class Directory():
         results = {}
         dll_names = []
         for entry in import_directories:
+            print(entry)
             original_first_thunk = entry[0]
             time_data_stamp = entry[1]
             forwarder = entry[2]
