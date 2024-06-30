@@ -94,6 +94,7 @@ class Directory():
                 thunk_start = entry[1]
                 chunk = 8
                 info = contents[thunk_start:thunk_start + chunk].hex()
+                print(info)
                 while info.lstrip('0') != '':
                     info = self.correct_endianness(info)
                     method_thunks.append(info.lstrip('0'))
