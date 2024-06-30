@@ -109,6 +109,7 @@ class Directory():
         imports_dictionary = {}
         for k,v in results.items():
             imports_list = []
+            print(results[k])
             for _ in range(0, len(v)):
                 real_address = int(self.base) + int(v[_], 16) - int(self.virtual_address)
                 
