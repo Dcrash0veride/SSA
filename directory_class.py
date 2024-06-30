@@ -106,7 +106,10 @@ class Directory():
                     info = contents[thunk_start: thunk_start + chunk].hex()
                 results[entry[0]] = method_thunks
         imports_dictionary = {}
+        print("OUT OF DLL NAMES LOOP")
+        print(imports_dictionary)
         for k,v in results.items():
+            print("IN RESULTS LOOP")
             imports_list = []
             for _ in range(0, len(v)):
                 real_address = int(self.base) + int(v[_], 16) - int(self.virtual_address)
