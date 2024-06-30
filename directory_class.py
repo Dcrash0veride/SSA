@@ -175,7 +175,7 @@ class Directory():
 
     
     def resolve_method_name(self, name_location):
-        print("Hello Welcome to Chili's")
+        print("Hello Welcome to SECY COMPUTER TIMES")
         with open(self.user_file, 'rb') as f:
             print(len(str(name_location)))
             if len(str(name_location)) > 8:
