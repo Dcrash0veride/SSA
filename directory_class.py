@@ -9,6 +9,7 @@ class Directory():
         self.virtual_address = vaddr
         self.max_size = max_size
         print("INIT BASE: " + str(self.base))
+        print("INIT VADDR: " + str(self.virtual_address))
 
 
     def calculate_address(self):
