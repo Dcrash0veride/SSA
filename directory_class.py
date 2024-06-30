@@ -105,7 +105,10 @@ class Directory():
         for k,v in results.items():
             imports_list = []
             for _ in range(0, len(v)):
+                print(self.base)
+                print(self.virtual_address)
                 real_address = int(self.base) + int(v[_], 16) - int(self.virtual_address)
+                print(real_address)
                 imports_list.append(self.resolve_method_name(real_address))
             imports_dictionary[k] = imports_list
         return imports_dictionary
