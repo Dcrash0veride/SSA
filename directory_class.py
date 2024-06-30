@@ -95,23 +95,18 @@ class Directory():
                 thunk_start = entry[1]
                 chunk = 8
                 info = contents[thunk_start:thunk_start + chunk].hex()
-                print(info)
                 while info.lstrip('0') != '':
                     info = self.correct_endianness(info)
                     method_thunks.append(info.lstrip('0'))
                     thunk_start += chunk
                     info = contents[thunk_start: thunk_start + chunk].hex()
                 results[entry[0]] = method_thunks
-            print("RESULTS", results.items())
         imports_dictionary = {}
         for k,v in results.items():
             imports_list = []
             for _ in range(0, len(v)):
-                print("BASE: " + str(self.base))
-                print("VADDR: " + str(self.virtual_address))
-                print("I" + str(v[_]))
                 real_address = int(self.base) + int(v[_], 16) - int(self.virtual_address)
-                print("RVA: " + str(real_address))
+                
                 imports_list.append(self.resolve_method_name(real_address))
             imports_dictionary[k] = imports_list
         return imports_dictionary
@@ -171,8 +166,6 @@ class Directory():
     
     def resolve_method_name(self, name_location):
         with open(self.user_file, 'rb') as f:
-            print(name_location)
-            print(self.max_size)
             if int(name_location) > int(self.max_size):
                 return " BAD ADDRESS "
             contents = f.read()

@@ -56,6 +56,7 @@ def section_results(file_to_open, number_of_sections, start_address):
 def export_directory_address_vars(section_results, directory_address):
         for k,v in section_results.items():
             section_end_address = int(v[2], 16) + int(v[3], 16)
+            print("section end address" + str(section_end_address))
             if int(directory_address, 16) > int(section_end_address):
                pass
             elif int(directory_address, 16) < int(section_end_address):
@@ -63,6 +64,7 @@ def export_directory_address_vars(section_results, directory_address):
                 virtual_addr = v[2]
                 max_size = int(v[3], 16) + int(v[4], 16) 
                 information_tuple = (raw_offset, directory_address, virtual_addr, max_size)
+                print(information_tuple)
 
                 return information_tuple
         return "Bad Address"

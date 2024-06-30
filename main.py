@@ -52,6 +52,7 @@ def parse_executable(file):
     section_dict[k] = loose_list
   colorize.pretty_print_results(['Name', 'SECTION_FIELD_VALUES'], section_dict)
   directory_info = results.export_directory_address_vars(section_dict, opt_ressy['ImportDirectoryAddress'])
+  print(directory_info)
   print(opt_ressy['ImportDirectoryAddress'])
   # Time to deal with directories Having issue with parsing directories. Offset should be 1400 I think
   raw_offset = int(directory_info[0], 16)
