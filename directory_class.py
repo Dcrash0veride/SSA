@@ -179,7 +179,7 @@ class Directory():
         with open(self.user_file, 'rb') as f:
             print(len(str(name_location)))
             if len(str(name_location)) > 8:
-                pass
+                return "BAD ADDRESS"
             contents = f.read()
             chunk_size = 1
             name = []
