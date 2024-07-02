@@ -42,7 +42,7 @@ def optional32_results(file_to_open, start_address, size):
    optional32_header = header_classv2.Header(header_classv2.optional_32_header_fields,
                                              file_to_open, start_address,
                                              start_address + size)
-   opt_res = optional_header.parse()
+   opt_res = optional32_header.parse()
    return opt_res
 
 def section_results(file_to_open, number_of_sections, start_address):
