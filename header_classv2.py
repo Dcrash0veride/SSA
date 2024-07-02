@@ -150,8 +150,11 @@ class Rich_header(Header):
             version = vs_version(int(product_id, 16))
             build_id = field_2[4:]
             count = field_1
-            prod_tuple = (version, int_names[product_id], int(build_id, 16), int(count, 16))
-            final_product_list.append(prod_tuple)
+            try:
+                prod_tuple = (version, int_names[product_id], int(build_id, 16), int(count, 16))
+                final_product_list.append(prod_tuple)
+            except KeyError:
+                pass
         return final_product_list
 
 class Dos_stub(Header):
