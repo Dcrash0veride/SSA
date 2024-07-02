@@ -93,7 +93,10 @@ def import_directory_results(file_to_open, raw_offset, directory_address, virtua
      cleaned_list = []
      for j in range(0, len(v)):
         entry = v[j]
-        cleaned_list.append(entry[:-1])
+        try:
+          cleaned_list.append(entry[:-1])
+        except TypeError:
+           pass 
      ressy_dict[k] = cleaned_list
   return ressy_dict
     
