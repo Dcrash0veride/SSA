@@ -128,7 +128,7 @@ class Directory():
     def resolve_method_name(self, name_location):
         with open(self.user_file, 'rb') as f:
             if int(name_location) > int(self.max_size):
-                return name_location
+                return int(name_location, 16)
             contents = f.read()
             chunk_size = 1
             name = []
