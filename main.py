@@ -37,10 +37,16 @@ def parse_executable(file):
   colorize.pretty_print_results(['Version', 'Product', 'Build ID', '# of times used'], rh)
   nt_ressy = results.nt_header_results(file_to_open, int(dos_ressy['e_lfanew'], 16))
   colorize.pretty_print_results(['NT_HEADER_FIELDS', 'NT_HEADER_VALUES'], nt_ressy)
-  opt_size = int(nt_ressy['SizeOfOptionalHeader'], 16)
-  opt_start = nt_ressy['current_marker']
-  opt_ressy = results.optional64_results(file_to_open, opt_start, opt_size)
-  colorize.pretty_print_results(['OPTIONAL_FIELD', 'OPTIONAL_VALUE'], opt_ressy)
+  if nt_ressy['machine'] == '8664':
+    opt_size = int(nt_ressy['SizeOfOptionalHeader'], 16)
+    opt_start = nt_ressy['current_marker']
+    opt_ressy = results.optional64_results(file_to_open, opt_start, opt_size)
+    colorize.pretty_print_results(['OPTIONAL_FIELD', 'OPTIONAL_VALUE'], opt_ressy)
+  else:
+    opt_size = int(nt_ressy['SizeOfOptionalHeader'], 16)
+    opt_start = nt_ressy['current_marker']
+    opt_ressy = results.optional32_results(file_to_open, opt_start, opt_size)
+    colorize.pretty_print_results(['OPTIONAL_FIELD', 'OPTIONAL_VALUE'], opt_ressy)
   number_of_sections = int(nt_ressy['NumberOfSections'])
   section_start = int(nt_ressy['SizeOfOptionalHeader'], 16) + int(nt_ressy['current_marker'])
   section_ressy = results.section_results(file_to_open, number_of_sections, section_start)
@@ -52,8 +58,6 @@ def parse_executable(file):
     section_dict[k] = loose_list
   colorize.pretty_print_results(['Name', 'SECTION_FIELD_VALUES'], section_dict)
   directory_info = results.export_directory_address_vars(section_dict, opt_ressy['ImportDirectoryAddress'])
-  print(directory_info)
-  print(opt_ressy['ImportDirectoryAddress'])
   # Time to deal with directories Having issue with parsing directories. Offset should be 1400 I think
   raw_offset = int(directory_info[0], 16)
   dir_addr = int(directory_info[1], 16)

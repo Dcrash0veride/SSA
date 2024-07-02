@@ -8,8 +8,7 @@ class Directory():
         self.directory_address = directory_address
         self.virtual_address = vaddr
         self.max_size = max_size
-        print("INIT BASE: " + str(self.base))
-        print("INIT VADDR: " + str(self.virtual_address))
+      
 
 
     def calculate_address(self):
@@ -77,7 +76,6 @@ class Directory():
         results = {}
         dll_names = []
         for entry in import_directories:
-            print(entry)
             original_first_thunk = entry[0]
             time_data_stamp = entry[1]
             forwarder = entry[2]
@@ -85,15 +83,11 @@ class Directory():
             first_thunk = entry[4]
             if name_rva != '00000000':
                 library_name_location = int(self.base) + int(name_rva, 16) - int(self.virtual_address)
-                print("LIB NAME" + str(library_name_location))
                 first_thunk_address = int(self.base) + int(first_thunk, 16) - int(self.virtual_address)
-                print("FIRT THINK:" + str(first_thunk_address))
                 top_tuple = (self.resolve_name(library_name_location), first_thunk_address)
                 # Creates a list of tuples contained the library_name and the first_thunk addy, run in reverse to occupy space betwizyt
-                print(top_tuple)
                 dll_names.append(top_tuple)
         for entry in dll_names:
-            print(entry)
             with open(self.user_file, 'rb') as f:
                 method_thunks = []
                 contents = f.read()
@@ -109,7 +103,6 @@ class Directory():
         imports_dictionary = {}
         for k,v in results.items():
             imports_list = []
-            print(results[k])
             for _ in range(0, len(v)):
                 real_address = int(self.base) + int(v[_], 16) - int(self.virtual_address)
                 
@@ -118,44 +111,6 @@ class Directory():
         return imports_dictionary
 
             
-        #return results
-    
-
-
-
-        #for _ in range(0, len(dll_names)):
-
-            
-
-
-
-
-
-#        for entry in range(len(import_directories)):
-#            if import_directories[entry][0] != '00000000' and import_directories[entry + 1][0] != '00000000':
-#                raw_name = import_directories[entry][3]
-#                format_name = raw_name.lstrip('0')
-#                true_name = self.resolve_name(format_name)
-#                t_start = import_directories[entry][0]
-#                t_end = import_directories[entry + 1][0]
-#                method_return = self.import_methods(t_start, t_end)
-#                results[true_name] = method_return
-#            elif import_directories[entry][0] != '00000000' and import_directories[entry + 1][0] == '00000000':
-#                final_countdown = ""
-#                final_showdown = ""
-#                for k,v in results.items():
-#                    final_countdown = k
-#                    final_showdown = v[0]
-#                raw_name = import_directories[entry][3]
-#                format_name = raw_name.lstrip('0')
-#                true_name = self.resolve_name(format_name)
-#                t_start = import_directories[entry][0]
-#                t_end = final_showdown
-#                method_return = self.import_methods(t_start, t_end)
-#                results[true_name] = method_return
-#        return results
-
-
     def resolve_name(self, name_location):
         with open(self.user_file, 'rb') as f:
             contents = f.read()
@@ -173,7 +128,7 @@ class Directory():
     def resolve_method_name(self, name_location):
         with open(self.user_file, 'rb') as f:
             if int(name_location) > int(self.max_size):
-                return " BAD ADDRESS "
+                return name_location
             contents = f.read()
             chunk_size = 1
             name = []
