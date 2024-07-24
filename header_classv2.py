@@ -286,7 +286,7 @@ optional_32_header_fields = {'Magic': 'word', 'MajorLinkerVersion': 'byte',
                              'SizeOfHeapReserve': 'dword',
                              'SizeOfHeapCommit': 'dword',
                              'LoaderFlags': 'dword',
-                             'NumberOfRvaAmdSizes': 'dword'}
+                             'NumberOfRvaAndSizes': 'dword'}
 
 
 section_header_fields = {'Name': 'byte', 'virtualSize': 'dword', 

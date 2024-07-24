@@ -1,4 +1,4 @@
-#from header_classv2 import Header, optional64, optional64_results, optional64_section_header_fields
+
 
 class Directory():
 
@@ -12,7 +12,9 @@ class Directory():
 
 
     def calculate_address(self):
+        print("calculating address with the following values: ", self.base, self.directory_address, self.virtual_address)
         addr = int(self.base) + int(self.directory_address) - int(self.virtual_address)
+        print("Result of calculation: ", addr)
         return addr
 
     def correct_endianness(self,first_thunk):

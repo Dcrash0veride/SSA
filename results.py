@@ -1,5 +1,6 @@
 import header_classv2
 import directory_class
+import hashing_class
 
 def dos_results_create(file_to_open):
   dos_header = header_classv2.Header(header_classv2.dos_header_fields, file_to_open, 0, 64)
@@ -62,6 +63,7 @@ def section_results(file_to_open, number_of_sections, start_address):
 
 def export_directory_address_vars(section_results, directory_address):
         for k,v in section_results.items():
+            print(v)
             section_end_address = int(v[2], 16) + int(v[3], 16)
             if int(directory_address, 16) > int(section_end_address):
                pass
@@ -99,4 +101,22 @@ def import_directory_results(file_to_open, raw_offset, directory_address, virtua
            cleaned_list.append(entry) 
      ressy_dict[k] = cleaned_list
   return ressy_dict
+
+def general_info(file_to_open):
+   pass
+
+def get_hashes(file_to_open):
+   algorithms = ['sha1', 'sha256', 'md5']
+   with open(file_to_open, 'rb') as f:
+      contents = f.read()
+      hashes = {}
+      for algo in algorithms:
+        new_hasher = hashing_class.Hasher(algo)
+        new_hash = new_hasher.hash_hash(contents)
+        hashes[algo] = new_hash
+   return hashes
+
+
+
+
     
